@@ -64,4 +64,27 @@ class Controller:
             f"ha dimensione {sizeC} e durata totale {totDurata}"))
         self._view.update_page()
     def handleGetSetAlbum(self, e):
-        pass
+
+        dTOTtxt = self._view._txtInSoglia.value
+        try:
+            dTOT = int(dTOTtxt)
+        except ValueError:
+            warnings.warn("Soglia not integer.")
+            self._view.txt_result.controls.clear()
+            self._view.txt_result.controls.append(ft.Text(f"Soglia inserita non valida. Inserire un intero. "))
+            return
+
+        if self._choiceAlbum is None:
+            warnings.warn("Attenzione, album non selezionato. ")
+            self._view.txt_result.controls.clear()
+            self._view.txt_result.controls.append(ft.Text(f"Selezionare un album."))
+            return
+
+        setAlbum, totD = self._model.getSetAlbum(self._choiceAlbum, dTOT)
+
+        self._view.txt_result.controls.clear()
+        self._view.txt_result.controls.append(ft.Text(f"Set di album ottimo trovato con durata totale {totD}."))
+        for s in setAlbum:
+            self._view.txt_result.controls.append(ft.Text(f"{str(s)}"))
+
+        self._view.update_page()

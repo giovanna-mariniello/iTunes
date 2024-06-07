@@ -1,5 +1,7 @@
 from model.model import Model
 
 mymodel = Model()
-mymodel.buildGraph(60*60*1000)
+mymodel.buildGraph(120*60*1000)
 print(mymodel.getGraphDeails())
+mymodel.getNodeI(261)
+# mymodel.getSetAlbum(mymodel.getNodeI(261),  )
