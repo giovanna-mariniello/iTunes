@@ -29,8 +29,10 @@ class Controller:
 
         nodi = self._model.get_nodi()
         nodi.sort(key=lambda x:x.Title)
+        print(type(nodi[0]))
         print(nodi)
         for n in nodi:
+            print(type(n))
             self._view._ddAlbum.options.append(ft.dropdown.Option(data=n, text=n.Title, on_click=self.getSelectedAlbum))
 
         self._view.update_page()
@@ -46,13 +48,13 @@ class Controller:
 
     def handleAnalisiComp(self, e):
         self._view.txt_result.controls.clear()
-
-        if self._album_scelto is None:
+        print(self._album_scelto, type(self._album_scelto))
+        if self._album_scelto == None:
             self._view.create_alert("Per favore seleziona un album")
             return
 
         dim_conn, durata_conn = self._model.get_connessa(self._album_scelto)
-        self._view.txt_result.controls.append(ft.Text(f"Componente connessa - {album}"))
+        self._view.txt_result.controls.append(ft.Text(f"Componente connessa - {self._album_scelto}"))
         self._view.txt_result.controls.append(ft.Text(f"Dimensione della componente connessa: {dim_conn}"))
         self._view.txt_result.controls.append(ft.Text(f"Durata della connessa: {durata_conn}"))
         self._view.update_page()
