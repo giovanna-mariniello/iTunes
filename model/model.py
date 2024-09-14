@@ -28,7 +28,7 @@ class Model:
         if self.durataTot(parziale) > dTOT:
             return
 
-        #verificare se parziale è migliore del best
+        #verificare se parziale è migliore del best   (dopo il primo if, altrimenti rischio di sakvare una soluzione ottima che però non rispetta il vincolo di durata)
         if len(parziale) > self._bestScore:
             self._bestSet = copy.deepcopy(parziale)
             self._bestScore = len(parziale)
@@ -38,7 +38,8 @@ class Model:
             if c not in parziale:
                 parziale.add(c)
                 # rimanenti = copy.deepcopy(connessa)
-                # rimanenti.remove(c)
+                # rimanenti.remove(c)    # per velocizzare tolgo i nodi superflui in connessa
+                # self._ricorsione(parziale, rimanenti, dTOT)
                 self._ricorsione(parziale, connessa, dTOT)
                 parziale.remove(c)
 
@@ -46,11 +47,11 @@ class Model:
         dtot = 0
         for n in listOfNodes:
             dtot += n.totD
-        return toMinutes(dtot)
+        return self.toMinutes(dtot)
 
     def buildGraph(self, d):
         self._graph.clear()
-        self._graph.add_nodes_from(DAO.getAlbums(toMillisec(d)))
+        self._graph.add_nodes_from(DAO.getAlbums(self.toMillisec(d)))
         self._idMap = {a.AlbumId: a for a in list(self._graph.nodes)}
         # for a in list(self._graph.nodes):
         #     self._idMap[a.AlbumId] = a
@@ -62,7 +63,7 @@ class Model:
         conn = nx.node_connected_component(self._graph, v0)
         durataTOT = 0
         for album in conn:
-            durataTOT += toMinutes(album.totD)
+            durataTOT += self.toMinutes(album.totD)
 
         return len(conn), durataTOT
     def getGraphDeails(self):
@@ -77,8 +78,9 @@ class Model:
     def getNodeI(self, i):
         print(self._idMap[i])
         return self._idMap[i]
-def toMillisec(d):
-    return d*60*1000
 
-def toMinutes(d):
-    return d/1000/60
+    def toMillisec(d):
+        return d*60*1000
+
+    def toMinutes(d):
+        return d/1000/60
